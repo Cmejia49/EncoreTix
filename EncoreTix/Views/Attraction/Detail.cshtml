@@ -1,0 +1,79 @@
+﻿@model EncoreTix.Core.Model.AttractionDetailsManagemen.AttractionDetailManagementResponse
+
+@{
+    ViewData["Title"] = "Details of " + Model.Attraction.Name;
+}
+<div class="text-center mb-4">
+    <div class="col">
+        @if (@Model.Attraction.Images != null && Model.Attraction.Images.Any())
+        {
+            <img src="@Model.Attraction.Images.First().Url" alt="@Model.Attraction.Name Image" width="100" style="height: auto;" />
+        }
+        else
+        {
+            <span>No Image Available</span>
+        }
+    </div>
+    <div class="col">
+        <h2 class="text-dark">@Model.Attraction.Name</h2>
+    </div>
+</div>
+
+<div class="d-flex justify-content-center">
+    @if (Model.EventList != null && Model.EventList.Any())
+    {
+        <div class="row">
+            @foreach (var eventItem in Model.EventList)
+            {
+                <div class="col-md-6 col-lg-4 d-flex align-items-stretch">
+                    <div class="card mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-4 d-flex justify-content-center align-items-center">
+                                @if (eventItem.Images != null && eventItem.Images.Any())
+                                {
+                                    <img src="@eventItem.Images.First().Url" alt="@eventItem.Name Image" class="img-fluid" style="max-height: 150px;" />
+                                }
+                                else
+                                {
+                                    <span>No Image Available</span>
+                                }
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">
+                                        @if (eventItem.Dates?.Start != null)
+                                        {
+                                            @eventItem.Dates.Start.DateTime.ToString("dddd, MMMM d, yyyy")
+                                        }
+                                    </h5>
+                                    <h4 class="card-text">@eventItem.Name</h4>
+                                    @if (eventItem.Embedded?.Venues != null && eventItem.Embedded.Venues.Any())
+                                    {
+                                        <p class="card-text">
+                                            @foreach (var venue in eventItem.Embedded.Venues)
+                                            {
+                                                @venue.Name
+                                            }
+                                        </p>
+                                    }
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            @if (eventItem.Dates?.Timezone != null)
+                                            {
+                                                @eventItem.Dates.Timezone
+                                            }
+                                        </small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-center">No events available.</p>
+    }
+</div>

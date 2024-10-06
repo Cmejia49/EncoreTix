@@ -1,0 +1,53 @@
+﻿@model EncoreTix.Core.Model.AttractionServices.EmbeddedAttractionList
+
+@{
+    ViewData["Title"] = "Search Attractions";
+}
+
+<h1>Search Attractions</h1>
+
+<!-- Search Form -->
+<form id="searchForm">
+    <div>
+        <label for="keyword">Keyword:</label>
+        <input type="text" id="keyword" name="keyword" />
+        <button type="submit">Search</button>
+    </div>
+</form>
+
+<div id="attractionList">
+    @await Html.PartialAsync("AttractionList", Model)
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            var keywordInput = document.getElementById('keyword');
+            var keyword = keywordInput.value.trim();
+
+            // Optional: Validate the input
+            if (!keyword) {
+                alert('Please enter a keyword to search.');
+                return;
+            }
+
+            // Show a loading indicator (optional)
+            var attractionListDiv = document.getElementById('attractionList');
+            attractionListDiv.innerHTML = '<p>Loading attractions...</p>';
+
+            // Make an AJAX request to fetch the filtered attractions
+            fetch('/Attraction/AttractionList?keyword=' + encodeURIComponent(keyword))
+                .then(response => response.text())
+                .then(html => {
+                    // Replace the attractionList div content with the fetched partial view
+                    attractionListDiv.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error fetching attractions:', error);
+                    attractionListDiv.innerHTML = '<p>An error occurred while loading attractions.</p>';
+                });
+        });
+    </script>
+}
